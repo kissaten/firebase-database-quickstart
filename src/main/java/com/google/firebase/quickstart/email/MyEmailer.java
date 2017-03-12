@@ -41,17 +41,14 @@ public class MyEmailer {
 
                 Email email = new SimpleEmail();
                 email.setHostName(smtpServer);
-//                email.setSslSmtpPort(smtpPort.toString());
                 email.setSmtpPort(smtpPort);
                 email.setAuthenticator(new DefaultAuthenticator(smtpUsername, smtpPassword));
-//                email.setSSLOnConnect(true);
                 email.setFrom("test@" + domain);
                 email.setSubject("New post!");
-                email.setMsg("This is a notfication from your Heroku app. There was a new post received by Firebase.");
+                email.setMsg(
+                    "This is a notfication from your Heroku app. There was a new post from Firebase.");
                 email.addTo(emailAddr);
-                String result = email.send();
-
-                System.out.println("[smtp] " + result);
+                email.send();
 
                 // Save the date of the last notification sent
                 Map<String, Object> update = new HashMap<String, Object>();
