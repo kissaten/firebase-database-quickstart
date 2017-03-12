@@ -29,7 +29,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.knowm.sundial.SundialJobScheduler;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 
 /**
  * Firebase Database quickstart sample for the Java Admin SDK.
@@ -185,7 +184,6 @@ public class Database {
         // Initialize Firebase
         String serviceAccountJson = System.getenv("SERVICE_ACCOUNT_JSON");
         String databaseUrl = System.getenv("DATABASE_URL");
-        FileInputStream serviceAccount = new FileInputStream("service-account.json");
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredential(FirebaseCredentials.fromCertificate(new ByteArrayInputStream(serviceAccountJson.getBytes())))
                 .setDatabaseUrl(databaseUrl)
