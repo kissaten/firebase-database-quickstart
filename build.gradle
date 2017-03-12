@@ -29,3 +29,6 @@ dependencies {
 
     runtime 'org.slf4j:slf4j-simple:1.7.24'
 }
+
+task stage(dependsOn: ['installApp', 'clean'])
+installApp.mustRunAfter clean
