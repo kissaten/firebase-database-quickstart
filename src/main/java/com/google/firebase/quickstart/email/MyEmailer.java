@@ -32,27 +32,30 @@ public class MyEmailer {
         System.out.println("sendNotificationEmail: " + email);
 
         try {
-            SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
-            Request request = new Request();
-            request.method = Method.POST;
-            request.endpoint = "mail/send";
-            request.body = "{\"personalizations\":" +
-                "[{\"to\":[{\"email\":\"" + email + "\"}]," +
-                "\"subject\":\"New Post!\"}]," +
-                "\"from\":{\"email\":\"test@example.com\"}," +
-                "\"content\":[{\"type\":\"text/plain\",\"value\": \"There was new post!\"}]}";
-            Response response = sg.api(request);
-            System.out.println(response.statusCode);
-            System.out.println(response.body);
-            System.out.println(response.headers);
+            String sendGridKey = System.getenv("SENDGRID_API_KEY");
+            if (sendGridKey != null) {
+                SendGrid sg = new SendGrid(sendGridKey);
+                Request request = new Request();
+                request.method = Method.POST;
+                request.endpoint = "mail/send";
+                request.body = "{\"personalizations\":" +
+                    "[{\"to\":[{\"email\":\"" + email + "\"}]," +
+                    "\"subject\":\"New Post!\"}]," +
+                    "\"from\":{\"email\":\"test@example.com\"}," +
+                    "\"content\":[{\"type\":\"text/plain\",\"value\": \"There was new post!\"}]}";
+                Response response = sg.api(request);
+                System.out.println(response.statusCode);
+                System.out.println(response.body);
+                System.out.println(response.headers);
 
 
-            // Save the date of the last notification sent
-            Map<String, Object> update = new HashMap<String, Object>();
-            update.put("/posts/" + postId + "/lastNotificationTimestamp", ServerValue.TIMESTAMP);
-            update.put("/user-posts/" + uid + "/" + postId + "/lastNotificationTimestamp", ServerValue.TIMESTAMP);
+                // Save the date of the last notification sent
+                Map<String, Object> update = new HashMap<String, Object>();
+                update.put("/posts/" + postId + "/lastNotificationTimestamp", ServerValue.TIMESTAMP);
+                update.put("/user-posts/" + uid + "/" + postId + "/lastNotificationTimestamp", ServerValue.TIMESTAMP);
 
-            FirebaseDatabase.getInstance().getReference().updateChildren(update);
+                FirebaseDatabase.getInstance().getReference().updateChildren(update);
+            }
         } catch (IOException ex) {
             System.out.println("Whoops! Unable to send email.");
             ex.printStackTrace();

@@ -22,8 +22,14 @@ import com.google.firebase.database.*;
 import com.google.firebase.quickstart.email.MyEmailer;
 import com.google.firebase.quickstart.model.Post;
 import com.google.firebase.quickstart.model.User;
+import com.google.firebase.quickstart.servlet.MainServlet;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.knowm.sundial.SundialJobScheduler;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 
 /**
  * Firebase Database quickstart sample for the Java Admin SDK.
@@ -58,7 +64,6 @@ public class Database {
      * Update the startCount value to equal the number of stars in the map.
      */
     private static void updateStarCount(DatabaseReference postRef) {
-        // [START post_stars_transaction]
         postRef.runTransaction(new Transaction.Handler() {
             public Transaction.Result doTransaction(MutableData mutableData) {
                 Post post = mutableData.getValue(Post.class);
@@ -122,7 +127,6 @@ public class Database {
         final DatabaseReference userPostRef = database.child("user-posts").child(post.uid).child(postId);
 
         // When the post changes, update the star counts
-        // [START post_value_event_listener]
         postRef.child("stars").addValueEventListener(new ValueEventListener() {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 updateStarCount(postRef);
@@ -140,7 +144,6 @@ public class Database {
      * Send email to author when new star is received.
      */
     private static void addNewStarsListener(final DatabaseReference postRef, final Post post) {
-        // [START child_event_listener_recycler]
         postRef.child("stars").addChildEventListener(new ChildEventListener() {
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildName) {
                 // New star added, notify the author of the post
@@ -158,18 +161,33 @@ public class Database {
                 System.out.println("Error: " + databaseError.getMessage());
             }
         });
-        // [END child_event_listener_recycler]
     }
 
-    public static void main(String[] args) {
+    /**
+     * Send an email listing the top posts every Sunday.
+     */
+    private static void startEmailer() {
+        SundialJobScheduler.startScheduler("com.google.firebase.quickstart.email");
+    }
+
+    private static void startWebServer() throws Exception {
+        Server server = new Server(Integer.valueOf(System.getenv("PORT")));
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
+        server.setHandler(context);
+        context.addServlet(new ServletHolder(new MainServlet()),"/*");
+        server.start();
+    }
+
+    public static void main(String[] args) throws Exception {
+        startWebServer();
+
         // Initialize Firebase
         String serviceAccountJson = System.getenv("SERVICE_ACCOUNT_JSON");
         String databaseUrl = System.getenv("DATABASE_URL");
-
+        FileInputStream serviceAccount = new FileInputStream("service-account.json");
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredential(
-                    FirebaseCredentials.fromCertificate(
-                        new ByteArrayInputStream(serviceAccountJson.getBytes())))
+                .setCredential(FirebaseCredentials.fromCertificate(new ByteArrayInputStream(serviceAccountJson.getBytes())))
                 .setDatabaseUrl(databaseUrl)
                 .build();
         FirebaseApp.initializeApp(options);
@@ -179,6 +197,9 @@ public class Database {
 
         // Start listening to the Database
         startListeners();
+
+        // Kick off weekly email task
+        startEmailer();
     }
 
 }
