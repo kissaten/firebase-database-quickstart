@@ -17,7 +17,7 @@ package com.google.firebase.quickstart.email;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.sendgrid.*;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -28,25 +28,35 @@ import java.util.Map;
  */
 public class MyEmailer {
 
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+    private static OkHttpClient client = new OkHttpClient();
+
     public static void sendNotificationEmail(String email, String uid, String postId) {
         System.out.println("sendNotificationEmail: " + email);
 
         try {
-            String sendGridKey = System.getenv("SENDGRID_API_KEY");
-            if (sendGridKey != null) {
-                SendGrid sg = new SendGrid(sendGridKey);
-                Request request = new Request();
-                request.method = Method.POST;
-                request.endpoint = "mail/send";
-                request.body = "{\"personalizations\":" +
-                    "[{\"to\":[{\"email\":\"" + email + "\"}]," +
-                    "\"subject\":\"New Post!\"}]," +
-                    "\"from\":{\"email\":\"test@example.com\"}," +
-                    "\"content\":[{\"type\":\"text/plain\",\"value\": \"There was new post!\"}]}";
-                Response response = sg.api(request);
-                System.out.println(response.statusCode);
-                System.out.println(response.body);
-                System.out.println(response.headers);
+            String apiKey = System.getenv("MAILGUN_API_KEY");
+            String domain = System.getenv("MAILGUN_DOMAIN");
+            if (apiKey != null) {
+                String url = "https://api:" + apiKey + "@api.mailgun.net/v2/" + domain + "/messages";
+
+                String json = "{" +
+                    "'from':'test@example.com'," +
+                    "'to': '" + email + "'," +
+                    "'subject': 'New post!'," +
+                    "'text': 'This is a notfication from your Heroku app. There was a new post received by Firebase.'" +
+                    "}";
+
+                RequestBody body = RequestBody.create(JSON, json);
+                Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+                Response response = client.newCall(request).execute();
+                System.out.println(response.message());
+//                System.out.println(response.body);
+//                System.out.println(response.headers);
 
 
                 // Save the date of the last notification sent
