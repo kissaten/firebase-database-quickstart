@@ -1,6 +1,10 @@
 Firebase Java Realtime Database Quickstart
 ==========================================
 
+Deploy this app for free on Heroku:
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 The Java Firebase Database quickstart demonstrates how to connect to and use the Firebase Realtime Database using Java through a simple social blogging app. It will interoperate with the Web, iOS and Android database quickstarts.
 
 This server will:
