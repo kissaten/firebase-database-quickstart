@@ -54,10 +54,9 @@ public class MyEmailer {
                     .post(body)
                     .build();
                 Response response = client.newCall(request).execute();
-                System.out.println(response.message());
-//                System.out.println(response.body);
-//                System.out.println(response.headers);
-
+                System.out.println("[mailgun] " + response.message());
+                System.out.println("[mailgun] " + response.code());
+                System.out.println("[mailgun] " + response.body());
 
                 // Save the date of the last notification sent
                 Map<String, Object> update = new HashMap<String, Object>();
