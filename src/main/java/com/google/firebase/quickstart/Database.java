@@ -170,7 +170,9 @@ public class Database {
     }
 
     private static void startWebServer() throws Exception {
-        Server server = new Server(Integer.valueOf(System.getenv("PORT")));
+        String port = System.getenv("PORT");
+        if (port == null) port = "8080";
+        Server server = new Server(Integer.valueOf(port));
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);

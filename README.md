@@ -28,7 +28,8 @@ Getting Started
 
 Run
 --------------
-- From the `database` directory run `./gradlew build run` to start run the quickstart.
+- Set DATABASE_URL and SERVICE_ACCOUNT_JSON env variables, or populate `.env` file from the `.env.sample`
+- Run `./gradlew build run` to start run the quickstart.
 - Configure and run one of the Database quickstarts for [Web](https://github.com/firebase/quickstart-js/tree/master/database),
   [iOS](https://github.com/firebase/quickstart-ios/tree/master/database) or
   [Android](https://github.com/firebase/quickstart-android/tree/master/database).
