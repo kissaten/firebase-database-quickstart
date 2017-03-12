@@ -1,0 +1,16 @@
+{
+  "name": "Firebase and Heroku demo",
+  "description": "An example app integration Heroku with a Firebase Realtime Database.",
+  "image": "heroku/gradle",
+  "addons": [ "sendgrid" ],
+  "env" : {
+    "SERVICE_ACCOUNT_JSON" : {
+      "description": "The service-account.json from Firebase app.",
+      "required": true
+    },
+    "DATABASE_URL" : {
+      "description": "The URL of the Firebase app in the form https://<app>.firebaseio.com/.",
+      "required": true
+    }
+  }
+}
