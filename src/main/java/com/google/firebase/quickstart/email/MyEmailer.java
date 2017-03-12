@@ -37,14 +37,15 @@ public class MyEmailer {
                 Integer smtpPort = Integer.valueOf(System.getenv("SPARKPOST_SMTP_PORT"));
                 String smtpUsername = System.getenv("SPARKPOST_SMTP_USERNAME");
                 String smtpPassword = System.getenv("SPARKPOST_SMTP_PASSWORD");
+                String domain = System.getenv("SPARKPOST_SANDBOX_DOMAIN");
 
                 Email email = new SimpleEmail();
                 email.setHostName(smtpServer);
-                email.setSslSmtpPort(smtpPort.toString());
+//                email.setSslSmtpPort(smtpPort.toString());
                 email.setSmtpPort(smtpPort);
                 email.setAuthenticator(new DefaultAuthenticator(smtpUsername, smtpPassword));
-                email.setSSLOnConnect(true);
-                email.setFrom("test@example.com");
+//                email.setSSLOnConnect(true);
+                email.setFrom("test@" + domain);
                 email.setSubject("New post!");
                 email.setMsg("This is a notfication from your Heroku app. There was a new post received by Firebase.");
                 email.addTo(emailAddr);
