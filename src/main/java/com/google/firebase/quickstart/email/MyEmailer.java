@@ -30,11 +30,10 @@ import java.util.Map;
 public class MyEmailer {
 
     public static void sendNotificationEmail(String emailAddr, String uid, String postId) {
-        System.out.println("sendNotificationEmail: " + emailAddr);
-
         try {
             String smtpServer = System.getenv("SPARKPOST_SMTP_HOST");
             if (smtpServer != null) {
+                System.out.println("sendNotificationEmail: " + emailAddr);
                 Integer smtpPort = Integer.valueOf(System.getenv("SPARKPOST_SMTP_PORT"));
                 String smtpUsername = System.getenv("SPARKPOST_SMTP_USERNAME");
                 String smtpPassword = System.getenv("SPARKPOST_SMTP_PASSWORD");
