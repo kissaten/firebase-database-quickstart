@@ -40,6 +40,7 @@ public class MyEmailer {
 
                 Email email = new SimpleEmail();
                 email.setHostName(smtpServer);
+                email.setSslSmtpPort(smtpPort.toString());
                 email.setSmtpPort(smtpPort);
                 email.setAuthenticator(new DefaultAuthenticator(smtpUsername, smtpPassword));
                 email.setSSLOnConnect(true);
