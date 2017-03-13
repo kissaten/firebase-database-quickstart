@@ -184,9 +184,7 @@ public class Database {
         startWebServer();
 
         // Initialize Firebase
-        String serviceAccountJson = System.getenv("SERVICE_ACCOUNT_JSON");
-
-        System.out.println(serviceAccountJson);
+        String serviceAccountJson = massageWhitespace(System.getenv("SERVICE_ACCOUNT_JSON"));
 
         String databaseUrl = System.getenv("DATABASE_URL");
         FirebaseOptions options = new FirebaseOptions.Builder()
@@ -203,6 +201,18 @@ public class Database {
 
         // Kick off weekly email task
         startEmailer();
+    }
+
+    private static String massageWhitespace(String s) {
+        String newString = "";
+        for (Character c : s.toCharArray()) {
+            if ("00a0".equals(Integer.toHexString(c | 0x10000).substring(1))) {
+                newString += " ";
+            } else {
+                newString += c;
+            }
+        }
+        return newString;
     }
 
 }
