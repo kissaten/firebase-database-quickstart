@@ -214,5 +214,4 @@ public class Database {
         }
         return newString;
     }
-
 }
