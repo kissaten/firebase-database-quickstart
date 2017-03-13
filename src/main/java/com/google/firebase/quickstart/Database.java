@@ -183,28 +183,26 @@ public class Database {
     public static void main(String[] args) throws Exception {
         startWebServer();
 
-        try {
-            // Initialize Firebase
-            String serviceAccountJson = System.getenv("SERVICE_ACCOUNT_JSON");
-            String databaseUrl = System.getenv("DATABASE_URL");
-            FirebaseOptions options = new FirebaseOptions.Builder()
+        // Initialize Firebase
+        String serviceAccountJson = System.getenv("SERVICE_ACCOUNT_JSON");
+
+        System.out.println(serviceAccountJson);
+
+        String databaseUrl = System.getenv("DATABASE_URL");
+        FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredential(FirebaseCredentials.fromCertificate(new ByteArrayInputStream(serviceAccountJson.getBytes())))
                 .setDatabaseUrl(databaseUrl)
                 .build();
-            FirebaseApp.initializeApp(options);
+        FirebaseApp.initializeApp(options);
 
-            // Shared Database reference
-            database = FirebaseDatabase.getInstance().getReference();
+        // Shared Database reference
+        database = FirebaseDatabase.getInstance().getReference();
 
-            // Start listening to the Database
-            startListeners();
+        // Start listening to the Database
+        startListeners();
 
-            // Kick off weekly email task
-            startEmailer();
-        } catch (Exception e) {
-            System.out.println("Failed to start database listeners");
-            e.printStackTrace();
-        }
+        // Kick off weekly email task
+        startEmailer();
     }
 
 }

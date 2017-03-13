@@ -15,13 +15,17 @@
  */
 package com.google.firebase.quickstart.email;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.quickstart.model.Post;
+import com.google.firebase.quickstart.model.User;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +33,9 @@ import java.util.Map;
  */
 public class MyEmailer {
 
+    /*
+     * send email to user notifying them that one of their posts got a new star
+     */
     public static void sendNotificationEmail(String emailAddr, String uid, String postId) {
         try {
             String smtpServer = System.getenv("SPARKPOST_SMTP_HOST");
@@ -63,4 +70,19 @@ public class MyEmailer {
         }
     }
 
+    public static void sendWeeklyEmail(Map<String,User> users, List<Post> topPosts) {
+        // TODO(developer): send email to each user notifying them about the current top posts
+        System.out.println("sendWeeklyEmail: MOCK IMPLEMENTATION");
+        System.out.println("sendWeeklyEmail: there are " + users.size() + " total users.");
+        System.out.println("sendWeeklyEmail: the top post is " + topPosts.get(0).title + " by " + topPosts.get(0).author);
+
+        for (String userId : users.keySet()) {
+            // Mark the last time the weekly email was sent out
+            // [START basic_write]
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(userId).child("lastSentWeeklyTimestamp");
+            userRef.setValue(ServerValue.TIMESTAMP);
+            // [END basic_write]
+        }
+    }
 }
