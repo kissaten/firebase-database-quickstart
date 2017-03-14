@@ -8,7 +8,7 @@
       "required": true
     },
     "DATABASE_URL" : {
-      "description": "The URL of the Firebase app in the form https://<app>.firebaseio.com/.",
+      "description": "The URL of the Firebase project in the form https://<project>.firebaseio.com/.",
       "required": true
     }
   }
